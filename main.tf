@@ -126,29 +126,14 @@ resource "aws_instance" "web-server" {
   associate_public_ip_address = true
   availability_zone = var.availability_zone
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt update",
-      "sudo apt upgrade -y",
-      "sudo apt install nginx ufw -y",
-      "sudo systemctl enable nginx",
-      "sudo systemctl start nginx",
-      "sudo ufw allow 80",
-      "sudo ufw allow 22",
-      "sudo ufw allow 443",
-      "sudo systemctl enable ufw",
-      "sudo systemctl start ufw",
-    ]
-
-    connection {
-      type        = "ssh"
-      user        = "admin"
-      private_key = file("${var.webserver_ssh_key}")
-      host        = self.public_ip
-    }
+  provisioner "local-exec" {
+    command = <<EOT
+      ansible-playbook -i '${self.public_ip},' -u admin --private-key ${var.webserver_ssh_key} ./ansible/playbook.yaml
+    EOT
   }
 
   tags = {
     Name = "Web Server"
   }
 }
+
