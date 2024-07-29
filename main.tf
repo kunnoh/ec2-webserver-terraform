@@ -29,7 +29,7 @@ resource "local_file" "webserver_private_key" {
 
 # VPC
 resource "aws_vpc" "WebServer-Vpc" {
-  cidr_block = "10.0.0.0/28"
+  cidr_block = "10.68.9.0/28"
   enable_dns_hostnames = true
   tags = {
     Name = "web-server"
@@ -53,7 +53,7 @@ resource "aws_route_table" "WebServer-Routing-Table" {
   }
   route {
     ipv6_cidr_block = "::/0"
-    gateway_id      = aws_internet_gateway.WebServer-GW.id
+    egress_only_gateway_id = aws_internet_gateway.WebServer-GW.id
   }
   tags = {
     Name = "WebServer Routing Table"
@@ -64,7 +64,7 @@ resource "aws_route_table" "WebServer-Routing-Table" {
 resource "aws_subnet" "WebServer-Subnet" {
   vpc_id     = aws_vpc.WebServer-Vpc.id
   cidr_block = aws_vpc.WebServer-Vpc.cidr_block
-  availability_zone = "${data.aws_region.current.name}"
+  availability_zone = var.availability_zone
   tags = {
     Name = "WebServer Subnet"
   }
@@ -77,7 +77,7 @@ resource "aws_route_table_association" "WebServer-Subnet_Association" {
 }
 
 # Security Group. Allow port 22,80,443
-resource "aws_security_group" "allow_webserver" {
+resource "aws_security_group" "allow_traffic" {
   name = "webserver-SG"
   description = "Allow http, https, ssh inbound traffic and all outbound traffic"
   vpc_id = aws_vpc.WebServer-Vpc.id
@@ -89,15 +89,7 @@ resource "aws_security_group" "allow_webserver" {
     to_port = 443
     cidr_blocks = ["0.0.0.0/0"]
   }
-  
-  # ingress {
-  #   description = "Allow HTTPS"
-  #   protocol = "tcp"
-  #   from_port = 443
-  #   to_port = 443
-  #   cidr_blocks = ["::/0"]
-  # }
-  
+
   ingress {
     description = "Allow HTTP"
     protocol = "tcp"
@@ -105,14 +97,6 @@ resource "aws_security_group" "allow_webserver" {
     to_port = 80
     cidr_blocks = ["0.0.0.0/0"]
   }
-  
-  # ingress {
-  #   description = "Allow HTTP"
-  #   protocol = "tcp"
-  #   from_port = 80
-  #   to_port = 80
-  #   cidr_blocks = ["::/0"]
-  # }
   
   ingress {
     description = "Allow SSH"
@@ -129,13 +113,6 @@ resource "aws_security_group" "allow_webserver" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # egress {
-  #   from_port = 0
-  #   to_port = 0
-  #   protocol = -1
-  #   cidr_blocks = ["::/0"]
-  # }
-
   tags = {
     Name = "Allow webserver http, https and ssh"
   }
@@ -147,15 +124,20 @@ resource "aws_instance" "web-server" {
   instance_type = var.ec2_instance_type
   key_name = aws_key_pair.webserver_ssh_key.key_name
   associate_public_ip_address = true
-  
-  # Install, enable & start nginx
+  availability_zone = var.availability_zone
+
   provisioner "remote-exec" {
     inline = [
-      "sudo apt update -y",
+      "sudo apt update",
       "sudo apt upgrade -y",
-      "sudo apt install nginx -y",
+      "sudo apt install nginx ufw -y",
       "sudo systemctl enable nginx",
-      "sudo systemctl start nginx"
+      "sudo systemctl start nginx",
+      "sudo ufw allow 80",
+      "sudo ufw allow 22",
+      "sudo ufw allow 443",
+      "sudo systemctl enable ufw",
+      "sudo systemctl start ufw",
     ]
 
     connection {
