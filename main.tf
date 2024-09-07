@@ -128,7 +128,7 @@ resource "aws_instance" "web-server" {
 
   # Set key permissions
   provisioner "local-exec" {
-    command = "chmod 600 ${var.webserver_ssh_key}"
+    command = "chmod 400 ${var.webserver_ssh_key}"
   }
 
   tags = {
@@ -144,12 +144,13 @@ resource "null_resource" "wait-web-server" {
       host = aws_instance.web-server.public_dns
       user = "admin"
       private_key = file(var.webserver_ssh_key)
+      timeout = "10m"
     }
     inline = ["echo 'connected!'"]
   }
 
   provisioner "local-exec" {
-    command = "ansible-playbook -T 300 -i ${aws_instance.web-server.public_dns},  --user admin --private-key ${var.webserver_ssh_key} ./ansible/playbook.yml"
+    command = "export ANSIBLE_SSH_ARGS='-o ServerAliveInterval=60 -o ServerAliveCountMax=5' && ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -T 600 -i ${aws_instance.web-server.public_dns}, --user admin --private-key ${var.webserver_ssh_key} -v ./ansible/playbook.yml"
   }
 }
 
