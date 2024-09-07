@@ -8,7 +8,7 @@ terraform {
 }
 
 data "aws_region" "current" {
-  provider = aws.EuropeGermany
+  provider = aws
 }
 
 # Key-pair
@@ -48,12 +48,12 @@ resource "aws_internet_gateway" "WebServer-GW" {
 resource "aws_route_table" "WebServer-Routing-Table" {
   vpc_id = aws_vpc.WebServer-Vpc.id
   route {
-    cidr_block = "10.68.9.0/28"
+    cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.WebServer-GW.id
   }
   route {
     ipv6_cidr_block = "::/0"
-    egress_only_gateway_id = aws_internet_gateway.WebServer-GW.id
+    gateway_id = aws_internet_gateway.WebServer-GW.id
   }
   tags = {
     Name = "WebServer Routing Table"
@@ -126,14 +126,38 @@ resource "aws_instance" "web-server" {
   associate_public_ip_address = true
   availability_zone = var.availability_zone
 
+  # Set key permissions
   provisioner "local-exec" {
-    command = <<EOT
-      ansible-playbook -i '${self.public_ip},' -u admin --private-key ${var.webserver_ssh_key} ./ansible/playbook.yaml
-    EOT
+    command = "chmod 600 ${var.webserver_ssh_key}"
   }
+
+  # vpc_security_group_ids = [aws_security_group.allow_traffic.id]
+  
+  # provisioner "local-exec" {
+  #   command = <<EOT
+  #     ansible-playbook -i '${self.public_ip},' -u admin --private-key ${var.webserver_ssh_key} ./ansible/playbook.yaml
+  #   EOT
+  # }
 
   tags = {
     Name = "Web Server"
+  }
+}
+
+resource "null_resource" "wait-web-server" {
+  depends_on = [aws_instance.web-server]
+  
+  provisioner "remote-exec" {
+    connection {
+      host = aws_instance.web-server.public_dns
+      user = "admin"
+      private_key = file(var.webserver_ssh_key)
+    }
+    inline = ["echo 'connected!'"]
+  }
+
+  provisioner "local-exec" {
+    command = "ansible-playbook -T 300 -i ${aws_instance.web-server.public_dns}  --user admin --private-key ${var.webserver_ssh_key} ./ansible/playbook.yml"
   }
 }
 
