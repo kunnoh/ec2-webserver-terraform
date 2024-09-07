@@ -1,7 +1,7 @@
 ---
-- name: Configure EC2
-  hosts: all
-  become: yes
+- hosts: all
+  name: Configure EC2
+  become: true
   
   tasks:
     - name: Update and upgrade
@@ -47,17 +47,11 @@
         port: '22'
 
     - name: Enable UFW
-      systemd:
-        name: ufw
-        enabled: yes
-        state: started
-    
-    - name: Enable UFW
       ufw:
         state: enabled
 
     - name: Add alias to .bashrc
       lineinfile:
-        path: /home/admin/.bashrc
+        path: /home/{{ ansible_user }}/.bashrc
         line: "alias c=clear"
         create: yes

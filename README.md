@@ -8,19 +8,25 @@
 4. Initialize terraform.
 5. Configure terraform.
 6. Verify configuration.
-7. Provision nginx web server using ansible.
+7. Provision ec2 then install certbot, UFW and nginx web server using ansible.
 8. Destroy aws resources.
 
 
 
 ### Prerequsistes
 - [AWS account](https://aws.amazon.com/free/?gclid=EAIaIQobChMIoYGWjbzChwMVO5RoCR3v7QTxEAAYASAAEgKWQPD_BwE&trk=2d3e6bee-b4a1-42e0-8600-6f2bb4fcb10c&sc_channel=ps&ef_id=EAIaIQobChMIoYGWjbzChwMVO5RoCR3v7QTxEAAYASAAEgKWQPD_BwE:G:s&s_kwcid=AL!4422!3!645125273261!e!!g!!aws!19574556887!145779846712&all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types=*all&awsf.Free%20Tier%20Categories=*all)
+
 - [aws-cli](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
 - [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 
 - [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 
+- [Nginx](https://nginx.org/en/docs/)
+
+- [Certbot](https://eff-certbot.readthedocs.io/en/latest/)
+
+- [UFW](https://help.ubuntu.com/community/UFW)
 
 
 ### Create new user in AWS and configure AWS CLI

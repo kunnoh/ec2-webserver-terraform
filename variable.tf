@@ -16,6 +16,12 @@ variable "ec2_instance_type" {
     default = "t2.micro"
 }
 
+variable "ec2_username" {
+  description = "server username"
+  type = string
+  default = "admin"
+}
+
 variable "availability_zone" {
     description = "availability region of your system"
     type = string

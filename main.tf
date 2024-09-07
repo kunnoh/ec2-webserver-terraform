@@ -142,7 +142,7 @@ resource "null_resource" "wait-web-server" {
   provisioner "remote-exec" {
     connection {
       host = aws_instance.web-server.public_dns
-      user = "admin"
+      user = var.ec2_username
       private_key = file(var.webserver_ssh_key)
       timeout = "15m"
     }
@@ -150,7 +150,10 @@ resource "null_resource" "wait-web-server" {
   }
 
   provisioner "local-exec" {
-    command = "export ANSIBLE_SSH_ARGS='-o ServerAliveInterval=60 -o ServerAliveCountMax=5' && ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -T 900 -i ${aws_instance.web-server.public_dns}, --user admin --private-key ${var.webserver_ssh_key} ./ansible/playbook.yml"
+    command = "export ANSIBLE_SSH_ARGS='-o ServerAliveInterval=60 -o ServerAliveCountMax=5' && ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -T 900 -i ${aws_instance.web-server.public_dns}, --user ${var.ec2_username} --private-key ${var.webserver_ssh_key} ./ansible/playbook.yml"
+  
+    # Ansible verbose
+    # command = "export ANSIBLE_SSH_ARGS='-o ServerAliveInterval=60 -o ServerAliveCountMax=5' && ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -T 900 -i ${aws_instance.web-server.public_dns}, --user ${var.ec2_username} --private-key ${var.webserver_ssh_key} -vv ./ansible/playbook.yml"
   }
 }
 
