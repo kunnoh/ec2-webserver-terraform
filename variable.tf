@@ -5,7 +5,7 @@ variable "webserver_ssh_key" {
 }
 
 variable "ami" {
-  description = "id for os type"
+  description = "AMI for os type"
   type = string
   default = "ami-0588c11374527e516"
 }

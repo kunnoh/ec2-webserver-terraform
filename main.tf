@@ -146,11 +146,11 @@ resource "null_resource" "wait-web-server" {
       private_key = file(var.webserver_ssh_key)
       timeout = "10m"
     }
-    inline = ["echo 'connected!'"]
+    inline = ["echo 'connected to web-server!'"]
   }
 
   provisioner "local-exec" {
-    command = "export ANSIBLE_SSH_ARGS='-o ServerAliveInterval=60 -o ServerAliveCountMax=5' && ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -T 600 -i ${aws_instance.web-server.public_dns}, --user admin --private-key ${var.webserver_ssh_key} -v ./ansible/playbook.yml"
+    command = "export ANSIBLE_SSH_ARGS='-o ServerAliveInterval=60 -o ServerAliveCountMax=5' && ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -T 600 -i ${aws_instance.web-server.public_dns}, --user admin --private-key ${var.webserver_ssh_key} ./ansible/playbook.yml"
   }
 }
 

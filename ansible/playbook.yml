@@ -4,7 +4,7 @@
   become: yes
   
   tasks:
-    - name: Update and upgrade without prompt
+    - name: Update and upgrade
       apt:
         update_cache: yes
         upgrade: dist
@@ -46,11 +46,15 @@
         rule: allow
         port: '22'
 
-    - name: Enable UFW without prompt
+    - name: Enable UFW
+      systemd:
+        name: ufw
+        enabled: yes
+        state: started
+    
+    - name: Enable UFW
       ufw:
         state: enabled
-        enable_on_boot: yes
-        force: yes
 
     - name: Add alias to .bashrc
       lineinfile:
