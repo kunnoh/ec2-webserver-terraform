@@ -1,7 +1,7 @@
 variable "webserver_ssh_key" {
-  description = "web server ssh public key"
+  description = "web server ssh private key"
   type = string
-  default = ".terraform/local/public_key"
+  default = ".terraform/local/private_key"
 }
 
 variable "ami" {
