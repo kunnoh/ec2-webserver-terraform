@@ -8,7 +8,7 @@
 4. Initialize terraform.
 5. Configure terraform.
 6. Verify configuration.
-7. Provision web server using terraform.
+7. Provision nginx web server using ansible.
 8. Destroy aws resources.
 
 
@@ -18,6 +18,10 @@
 - [aws-cli](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
 - [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
+
+- [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+
+
 
 ### Create new user in AWS and configure AWS CLI
 Create a new user. Don't use root account when it's not required. Create a new IAM user that has admin access.
@@ -98,4 +102,9 @@ sudo tee /etc/apt/sources.list.d/hashicorp.list
 - [Terraform aws_security_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group)
 
 - [Terraform aws_instance](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance)
+
+
+
+**Ansible**
+- [Ansible docs](https://docs.ansible.com/ansible/latest/)
 

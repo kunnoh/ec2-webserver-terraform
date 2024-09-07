@@ -131,14 +131,6 @@ resource "aws_instance" "web-server" {
     command = "chmod 600 ${var.webserver_ssh_key}"
   }
 
-  # vpc_security_group_ids = [aws_security_group.allow_traffic.id]
-  
-  # provisioner "local-exec" {
-  #   command = <<EOT
-  #     ansible-playbook -i '${self.public_ip},' -u admin --private-key ${var.webserver_ssh_key} ./ansible/playbook.yaml
-  #   EOT
-  # }
-
   tags = {
     Name = "Web Server"
   }
@@ -157,7 +149,7 @@ resource "null_resource" "wait-web-server" {
   }
 
   provisioner "local-exec" {
-    command = "ansible-playbook -T 300 -i ${aws_instance.web-server.public_dns}  --user admin --private-key ${var.webserver_ssh_key} ./ansible/playbook.yml"
+    command = "ansible-playbook -T 300 -i ${aws_instance.web-server.public_dns},  --user admin --private-key ${var.webserver_ssh_key} ./ansible/playbook.yml"
   }
 }
 
