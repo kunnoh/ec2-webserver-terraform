@@ -1,15 +1,17 @@
 # EC2 nginx web-server Terraform
 
 **Provision new ec2 instance and install nginx web server.**
-### Steps
+## Steps
 1. Create AWS account.
 2. Install aws-cli & login.
 3. Install terraform.
 4. Initialize terraform.
 5. Configure terraform.
 6. Verify configuration.
-7. Provision ec2 then install certbot, UFW and nginx web server using ansible.
-8. Destroy aws resources.
+7. Install ansible. Configure UFW.
+8. Provision ec2 then install certbot, UFW and nginx web server using ansible.
+9. Destroy aws resources.
+10. References.
 
 
 
@@ -22,14 +24,8 @@
 
 - [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 
-- [Nginx](https://nginx.org/en/docs/)
 
-- [Certbot](https://eff-certbot.readthedocs.io/en/latest/)
-
-- [UFW](https://help.ubuntu.com/community/UFW)
-
-
-### Create new user in AWS and configure AWS CLI
+## 1. Create new user in AWS and configure AWS CLI
 Create a new user. Don't use root account when it's not required. Create a new IAM user that has admin access.
 
 ### Install aws-cli
@@ -55,7 +51,7 @@ aws configure
 ```
 
 
-### Install terraform
+### 3. Install terraform
 **Install required dependencies**
 
 ***debian/ubuntu***
@@ -81,7 +77,7 @@ sudo tee /etc/apt/sources.list.d/hashicorp.list
 ```
 
 
-## Reference
+## 10. Reference
 
 **Aws**
 - [AWS](https://aws.amazon.com)

@@ -32,22 +32,29 @@
         DEBIAN_FRONTEND: noninteractive
 
     - name: Allow HTTP through UFW
-      ufw:
+      community.general.ufw:
         rule: allow
         port: '80'
+        proto: tcp
 
     - name: Allow HTTPS through UFW
-      ufw:
+      community.general.ufw:
         rule: allow
         port: '443'
+        proto: tcp
 
     - name: Allow SSH through UFW
-      ufw:
+      community.general.ufw:
         rule: allow
         port: '22'
+        proto: tcp
+
+    - name: Set logging
+      community.general.ufw:
+        logging: 'on'
 
     - name: Enable UFW
-      ufw:
+      community.general.ufw:
         state: enabled
 
     - name: Add alias to .bashrc
