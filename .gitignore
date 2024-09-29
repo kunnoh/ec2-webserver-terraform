@@ -35,3 +35,4 @@ terraform.rc
 .terraform/
 plan.out
 r.md
+./.trunk
