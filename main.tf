@@ -12,18 +12,17 @@ data "aws_region" "current" {
 }
 
 # Key-pair
-resource "tls_private_key" "webserver_rsa_4096" {
-  algorithm   = "RSA"
-  rsa_bits  = 4096
+resource "tls_private_key" "vpn_ed25519" {
+  algorithm = "ED25519"
 }
 
 resource "aws_key_pair" "webserver_ssh_key" {
   key_name   = var.webserver_ssh_key
-  public_key = tls_private_key.webserver_rsa_4096.public_key_openssh
+  public_key = tls_private_key.vpn_ed25519.public_key_openssh
 }
 
 resource "local_file" "webserver_private_key" {
-  content = tls_private_key.webserver_rsa_4096.private_key_openssh
+  content = tls_private_key.vpn_ed25519.private_key_openssh
   filename = var.webserver_ssh_key
 }
 
