@@ -105,14 +105,6 @@ resource "aws_security_group" "allow_traffic" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ingress {
-    description = "Allow WireGuard"
-    protocol = "udp"
-    from_port = 51820
-    to_port = 51820
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
   egress {
     from_port = 0
     to_port = 0
@@ -121,7 +113,7 @@ resource "aws_security_group" "allow_traffic" {
   }
 
   tags = {
-    Name = "Allow webserver http, https and ssh"
+    Name = "Allow http, https and ssh"
   }
 }
 
